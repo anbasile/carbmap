@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <!-- development version, includes helpful console warnings -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>title</h1>
+  </header>
+  <main>
+    <div id="app">
+      <div>
+        <span>high in sugar</span>
+        <ul v-for="product in high.products">
+          <div>
+            <img v-bind:src="product.image_thumb_url" alt="">
+          </div>
+      </div>
+
+      <div>
+        <span>low in sugar</span>
+        <ul v-for="product in low.products">
+          <div>
+            <img v-bind:src="product.image_thumb_url" alt="">
+          </div>
+      </div>
+      </ul>
+    </div>
+  </main>
+  <footer></footer>
+  <script>
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          high: '',
+          low: ''
+        }
+      },
+      mounted() {
+        fetch("https://nl.openfoodfacts.org/cgi/search.pl?action=process&nutriment_0=sugars&nutriment_compare_0=gte&nutriment_value_0=15&page_size=3&json=true", requestOptions)
+          .then(response => response.json())
+          .then(data => (this.high = data))
+          .catch(error => console.log('error', error));
+        fetch("https://nl.openfoodfacts.org/cgi/search.pl?action=process&nutriment_0=sugars&nutriment_compare_0=lte&nutriment_value_0=15&page_size=3&json=true", requestOptions)
+          .then(response => response.json())
+          .then(data => (this.low = data))
+          .catch(error => console.log('error', error));
+
+
+      }
+    });
+  </script>
+</body>
+
+</html>
